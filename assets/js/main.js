@@ -21,7 +21,9 @@ class timeBlock
 }
 
 // Load schedule from storage or create a new schedule
-var schedule = window.localStorage.getItem( "workDaySchedule" );
+var schedule = JSON.parse(
+   window.localStorage.getItem( "workDaySchedule" )
+);
 if ( schedule === null )
 {
    schedule = new timeBlock( 9, 17 );
@@ -46,18 +48,32 @@ function addTimeBlock( s, index )
 
    document.querySelector( ".container" ).appendChild(ContainerEl);
 
-   ContainerEl.setAttribute("data-index", JSON.stringify(index))
+   ContainerEl.setAttribute("data-index", JSON.stringify(index));
+   saveButtonEl.setAttribute("data-index", JSON.stringify(index));
    timeBlockTextEl.textContent = s[ index ].body;
    hourTextEl.textContent = s[ index ].hour;
    saveButtonEl.textContent = "Save";
+
+   saveButtonEl.addEventListener('click', (e)=>
+      {
+         console.log(e.target.getAttribute("data-index"));
+         saveTimeBlock( 
+            document.querySelector(
+               `.container section[data-index='${ index }']`)
+            , index
+         );
+      }
+   );
 }
 
-function saveTimeBlock( index )
+function saveTimeBlock( timeBlockEl, index )
 {
-   localStorage.setItem("workDaySchedule")
+   schedule[ index ].body = timeBlockEl.querySelector("textarea").value;
+   localStorage.setItem("workDaySchedule", JSON.stringify(schedule));
 }
 
 for ( let i = 0;  i < schedule.length;  i++ )
 {
    addTimeBlock( schedule, i );
 }
+
