@@ -53,6 +53,7 @@ function addTimeBlock( s, index )
    timeBlockTextEl.textContent = s[ index ].body;
    hourTextEl.textContent = s[ index ].hour;
    saveButtonEl.textContent = "Save";
+   saveButtonEl.className = "saveBtn";
 
    saveButtonEl.addEventListener('click', (e)=>
       {
@@ -64,6 +65,20 @@ function addTimeBlock( s, index )
          );
       }
    );
+   // set color
+   let currentHour = moment().format('H');
+   if ( index < currentHour )
+   {
+      ContainerEl.className = "past";
+   }
+   else if ( index > currentHour )
+   {
+      ContainerEl.className = "future";
+   }
+   else
+   {
+      ContainerEl.className = "present";
+   }
 }
 
 function saveTimeBlock( timeBlockEl, index )
